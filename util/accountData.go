@@ -19,7 +19,7 @@ type AccountData struct {
 		Color              string  `json:"color"`
 		BackgroundImageUrl string  `json:"backgroundImageUrl"`
 		ForegroundImageUrl string  `json:"foregroundImageUrl"`
-		MinecraftUUID      *string `json:"minecraftUUID"`
+		MinecraftUuid      *string `json:"minecraftUuid"`
 		SocialCredit       struct {
 			Amount int64  `json:"amount"`
 			Tier   string `json:"tier"`

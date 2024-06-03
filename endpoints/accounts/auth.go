@@ -111,6 +111,7 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 			newAccount.Profile.Level = 0
 			newAccount.Profile.Color = "#000000"
 			newAccount.Profile.BackgroundImageUrl = "https://die-coolen-allgemeinen-ficker.github.io/assets/images/wallpapers/3.png"
+			newAccount.Profile.ForegroundImageUrl = ""
 			newAccount.Profile.SocialCredit.Amount = 1000
 			newAccount.Profile.SocialCredit.Tier = "A"
 			newAccount.Profile.Games.SnakeHighscore = 0

@@ -22,6 +22,8 @@ func isValidKey(key string) bool {
 }
 
 func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
+	rest.OPTIONS(path, func(ctx *gin.Context) {})
+
 	rest.GET(path, func(ctx *gin.Context) {
 		// Validate
 		searchId := ctx.Param("id")

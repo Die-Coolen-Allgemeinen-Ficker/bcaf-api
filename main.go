@@ -1,10 +1,11 @@
 package main
 
 import (
-	"context"
-	"os"
+	"bcaf-api/endpoints"
 	"bcaf-api/endpoints/accounts"
 	"bcaf-api/endpoints/accounts/lookup"
+	"context"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lpernett/godotenv"
@@ -33,6 +34,7 @@ func main() {
 	}
 	
 	rest := gin.Default()
+	rest.SetTrustedProxies(nil)
 
 	rest.Use(corsMiddleware())
 
@@ -40,6 +42,7 @@ func main() {
 	accounts.Auth("/v1/accounts/auth", rest, mongoClient)
 	accounts.Refresh("/v1/accounts/refresh", rest)
 	lookup.Id("/v1/accounts/lookup/:id", rest, mongoClient)
+	endpoints.Ping("/v1/ping", rest)
 
 	rest.Run()
 }
