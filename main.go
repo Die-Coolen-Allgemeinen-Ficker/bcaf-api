@@ -4,6 +4,7 @@ import (
 	"bcaf-api/endpoints"
 	"bcaf-api/endpoints/accounts"
 	"bcaf-api/endpoints/accounts/lookup"
+	"bcaf-api/endpoints/minecraft/name"
 	"context"
 	"os"
 
@@ -15,7 +16,7 @@ import (
 
 func corsMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+		ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		ctx.Writer.Header().Set("Access-Control-Allow-Headers", "*")
 		ctx.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		ctx.Writer.Header().Set("Access-Control-Allow-Methods", "*")
@@ -43,6 +44,7 @@ func main() {
 	accounts.Refresh("/v1/accounts/refresh", rest)
 	lookup.Id("/v1/accounts/lookup/:id", rest, mongoClient)
 	endpoints.Ping("/v1/ping", rest)
+	name.Uuid("/v1/minecraft/name/:uuid", rest)
 
 	rest.Run()
 }

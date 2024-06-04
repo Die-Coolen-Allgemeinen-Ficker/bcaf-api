@@ -24,7 +24,7 @@ func Validate(accessToken string, ctx *gin.Context) *string {
 	guildResponse, err := httpClient.Do(guildRequest)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"response": "no response from discord",
+			"response": "failed to make request",
 		})
 		return nil
 	}
@@ -56,7 +56,7 @@ func Validate(accessToken string, ctx *gin.Context) *string {
 		}
 	}
 	if !member {
-		ctx.JSON(http.StatusUnauthorized, gin.H{
+		ctx.JSON(http.StatusForbidden, gin.H{
 			"response": "you are not a bcaf member",
 		})
 		return nil
@@ -75,7 +75,7 @@ func Validate(accessToken string, ctx *gin.Context) *string {
 	userResponse, err := httpClient.Do(userRequest)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"response": "no response from discord",
+			"response": "failed to make request",
 		})
 		return nil
 	}

@@ -24,7 +24,7 @@ func Refresh(path string, rest *gin.Engine) {
 		response, err := http.Post("https://discord.com/api/oauth2/token", "application/x-www-form-urlencoded", bytes.NewBuffer(params))
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"response": "no response from discord",
+				"response": "failed to make request",
 			})
 			return
 		}
@@ -40,7 +40,7 @@ func Refresh(path string, rest *gin.Engine) {
 		}
 
 		if responseBody["error"] != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
+			ctx.JSON(http.StatusUnauthorized, gin.H{
 				"response": "invalid refresh token",
 			})
 			return

@@ -78,7 +78,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		}
 
 		if searchId != *userId {
-			ctx.JSON(http.StatusUnauthorized, gin.H{
+			ctx.JSON(http.StatusForbidden, gin.H{
 				"response": "you may only edit your own user data",
 			})
 			return

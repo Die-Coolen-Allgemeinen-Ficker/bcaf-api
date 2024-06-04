@@ -29,7 +29,7 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		response, err := http.Post("https://discord.com/api/oauth2/token", "application/x-www-form-urlencoded", bytes.NewBuffer(params))
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"response": "no response from discord",
+				"response": "failed to make request",
 			})
 			return
 		}
@@ -46,18 +46,17 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 
 		// Validate
 
-		tokenCheck := responseBody["access_token"]
-		if tokenCheck == nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
+		if responseBody["error"] != nil {
+			ctx.JSON(http.StatusUnauthorized, gin.H{
 				"response": "invalid code",
 			})
 			return
 		}
-		accessToken := tokenCheck.(string)
+		accessToken := responseBody["access_token"].(string)
 
 		userId := util.Validate(accessToken, ctx)
 		if userId == nil {
-			ctx.JSON(http.StatusUnauthorized, gin.H{
+			ctx.JSON(http.StatusForbidden, gin.H{
 				"response": "you are not a bcaf member",
 			})
 			return
@@ -85,7 +84,7 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		userResponse, err := httpClient.Do(userRequest)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"response": "no response from discord",
+				"response": "failed to make request",
 			})
 			return
 		}
