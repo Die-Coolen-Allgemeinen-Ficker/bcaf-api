@@ -103,9 +103,14 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		if len(results) == 0 {
 			// Init new account
 
+			name, exists := userData["global_name"]
+			if !exists || name == nil {
+				name = userData["username"]
+			}
+
 			var newAccount util.AccountData
 			newAccount.UserId = *userId
-			newAccount.Name = userData["global_name"].(string)
+			newAccount.Name = name.(string)
 			newAccount.AvatarUrl = "https://cdn.discordapp.com/avatars/" + *userId + "/" + userData["avatar"].(string)
 			newAccount.Profile.Level = 0
 			newAccount.Profile.Color = "#000000"
@@ -118,7 +123,7 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 			newAccount.Profile.MessageStats.NWordCount = 0
 			newAccount.Profile.MessageStats.MessageCount = 0
 			newAccount.Profile.MessageStats.MessagesLast30Days = 0
-			newAccount.Profile.Achievements = []struct{Name string "json:\"name\""; Description string "json:\"description\""}{}
+			newAccount.Profile.Achievements = []struct{Name string "json:\"name\""; Description string "json:\"description\""; Timestamp int64 "json:\"timestamp\""}{}
 			newAccount.BcafCoin = 0
 			newAccount.HasBoostedBefore = false
 			newAccount.HasPlayedLeagueOfLegends = false

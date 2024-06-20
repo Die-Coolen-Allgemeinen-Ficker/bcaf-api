@@ -34,6 +34,7 @@ func main() {
 		panic(err)
 	}
 	
+	gin.SetMode(gin.ReleaseMode)
 	rest := gin.Default()
 	rest.SetTrustedProxies(nil)
 

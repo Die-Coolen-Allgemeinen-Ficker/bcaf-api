@@ -37,11 +37,12 @@ type AccountData struct {
 		Achievements []struct {
 			Name string `json:"name"`
 			Description string `json:"description"`
+			Timestamp int64 `json:"timestamp"`
 		} `json:"achievements"`
 	} `json:"profile"`
 	BcafCoin                 int64 `json:"bcafCoin"`
 	HasBoostedBefore         bool  `json:"hasBoostedBefore"`
-	HasPlayedLeagueOfLegends bool  `json:"hasPlayerLeagueOfLegends"`
+	HasPlayedLeagueOfLegends bool  `json:"hasPlayedLeagueOfLegends"`
 	BcafJoinTimestamp        int64 `json:"bcafJoinTimestamp"`
 	Legacy                   bool  `json:"legacy"`
 	CreatedTimestamp         int64 `json:"createdTimestamp"`

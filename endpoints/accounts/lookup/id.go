@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,7 +29,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		// Validate
 		searchId := ctx.Param("id")
 		match, _ := regexp.MatchString("^[0-9]+$", searchId)
-		if !match || len(searchId) < 17 || len(searchId) > 18 {
+		if !match || len(searchId) < 18 || len(searchId) > 19 {
 			ctx.JSON(http.StatusBadRequest, gin.H{
 				"response": "invalid user id",
 			})
@@ -121,7 +122,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 					}
 				}
 				if !hasAchievement {
-					user.Profile.Achievements = append(user.Profile.Achievements, struct{Name string "json:\"name\""; Description string "json:\"description\""}{Name: "Hackerman", Description: "Schicke eine POST Request an die BCAF REST API um Daten zu verändern, die du nicht verändern darfst."})
+					user.Profile.Achievements = append(user.Profile.Achievements, struct{Name string "json:\"name\""; Description string "json:\"description\""; Timestamp int64 "json:\"timestamp\""}{Name: "Hackerman", Description: "Schicke eine POST Request an die BCAF REST API um Daten zu verändern, die du nicht verändern darfst.", Timestamp: time.Now().UnixMilli()})
 					err = util.UpdateData(user, ctx, mongoClient.Database("bcaf-user-data").Collection("accounts"))
 					if err != nil {
 						ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -159,7 +160,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		if bodyData["foregroundImageUrl"] != nil {
 			var foregroundImageUrl string
 			foregroundImageUrl, ok = bodyData["foregroundImageUrl"].(string)
-			user.Profile.BackgroundImageUrl = foregroundImageUrl
+			user.Profile.ForegroundImageUrl = foregroundImageUrl
 		}
 		if !ok {
 			ctx.JSON(http.StatusBadRequest, gin.H{
