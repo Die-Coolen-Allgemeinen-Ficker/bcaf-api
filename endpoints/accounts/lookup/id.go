@@ -28,14 +28,6 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 	rest.GET(path, func(ctx *gin.Context) {
 		// Validate
 		searchId := ctx.Param("id")
-		match, _ := regexp.MatchString("^[0-9]+$", searchId)
-		if !match || len(searchId) < 18 || len(searchId) > 19 {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"response": "invalid user id",
-			})
-			return
-		}
-
 		accessToken := ctx.Request.Header.Get("authorization")
 		userId := util.Validate(accessToken, ctx)
 		if userId == nil {
