@@ -14,3 +14,5 @@ Authorization data which is given by the Discord oauth2 API is passed via an `au
 | `/v1/accounts/list` | `GET` | Access token | | `GET`s a list of every registered users account data
 | `/v1/accounts/auth` | `GET` | Code | | `GET`s Discord authentication data as given by `https://discord.com/api/oauth2/token`
 | `/v1/accounts/refresh` | `GET` | Refresh token | | `GET`s refreshed Discord authentication data |
+| `/v1/smp/info` | `GET` | (Optional) Access token | | `GET`s a list of all currently running Minecraft SMPs (IPs are omitted if no access token is given) |
+| `/v1/smp/worlds` | `GET` | Access token | | `GET`s a list of all previous Minecraft SMP world downloads |
