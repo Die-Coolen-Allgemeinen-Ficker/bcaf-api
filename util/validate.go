@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Validate(accessToken string, ctx *gin.Context) *string {
+func Validate(accessToken string, ctx *gin.Context, denyIfInvalid bool) *string {
 	httpClient := &http.Client{}
 
 	// Check if user is BCAF member
@@ -41,25 +41,30 @@ func Validate(accessToken string, ctx *gin.Context) *string {
 
 	var bodyData []map[string]interface{}
 	json.Unmarshal(rawBody, &bodyData)
+	
 	if bodyData == nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"response": "invalid access token",
-		})
-		return nil
-	}
-
-	member := false
-	for _, guild := range bodyData {
-		if guild["id"] == "555729962188144660" {
-			member = true
-			break
+		if denyIfInvalid {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"response": "invalid access token",
+			})
 		}
-	}
-	if !member {
-		ctx.JSON(http.StatusForbidden, gin.H{
-			"response": "you are not a bcaf member",
-		})
 		return nil
+	} else {
+		member := false
+		for _, guild := range bodyData {
+			if guild["id"] == "555729962188144660" {
+				member = true
+				break
+			}
+		}
+		if !member {
+			if denyIfInvalid {
+				ctx.JSON(http.StatusForbidden, gin.H{
+					"response": "you are not a bcaf member",
+				})
+			}
+			return nil
+		}
 	}
 
 	// Get user id

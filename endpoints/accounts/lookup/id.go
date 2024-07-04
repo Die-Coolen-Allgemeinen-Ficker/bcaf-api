@@ -29,14 +29,14 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		// Validate
 		searchId := ctx.Param("id")
 		accessToken := ctx.Request.Header.Get("authorization")
-		userId := util.Validate(accessToken, ctx)
+		userId := util.Validate(accessToken, ctx, true)
 		if userId == nil {
 			return
 		}
 
 		// Get Data
 
-		results, err := util.GetData("accounts", bson.D{{Key: "userId", Value: searchId}}, ctx, mongoClient)
+		results, err := util.GetData[util.AccountData]("accounts", bson.D{{Key: "userId", Value: searchId}}, ctx, mongoClient)
 		if err != nil {
 			return
 		}
@@ -65,7 +65,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		}
 
 		accessToken := ctx.Request.Header.Get("authorization")
-		userId := util.Validate(accessToken, ctx)
+		userId := util.Validate(accessToken, ctx, true)
 		if userId == nil {
 			return
 		}
@@ -79,7 +79,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 
 		// Get data
 
-		results, err := util.GetData("accounts", bson.D{{Key: "userId", Value: searchId}}, ctx, mongoClient)
+		results, err := util.GetData[util.AccountData]("accounts", bson.D{{Key: "userId", Value: searchId}}, ctx, mongoClient)
 		if err != nil {
 			return
 		}
@@ -115,7 +115,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 				}
 				if !hasAchievement {
 					user.Profile.Achievements = append(user.Profile.Achievements, struct{Name string "json:\"name\""; Description string "json:\"description\""; Timestamp int64 "json:\"timestamp\""}{Name: "Hackerman", Description: "Schicke eine POST Request an die BCAF REST API um Daten zu verändern, die du nicht verändern darfst.", Timestamp: time.Now().UnixMilli()})
-					err = util.UpdateData(user, ctx, mongoClient.Database("bcaf-user-data").Collection("accounts"))
+					err = util.UpdateAccount(user, ctx, mongoClient)
 					if err != nil {
 						ctx.JSON(http.StatusInternalServerError, gin.H{
 							"response": "internal server error",
@@ -163,7 +163,7 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 
 		// Update data
 
-		err = util.UpdateData(user, ctx, mongoClient.Database("bcaf-user-data").Collection("accounts"))
+		err = util.UpdateAccount(user, ctx, mongoClient)
 		if err != nil {
 			return
 		}

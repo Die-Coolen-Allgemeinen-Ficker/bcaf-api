@@ -54,7 +54,7 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		}
 		accessToken := responseBody["access_token"].(string)
 
-		userId := util.Validate(accessToken, ctx)
+		userId := util.Validate(accessToken, ctx, true)
 		if userId == nil {
 			ctx.JSON(http.StatusForbidden, gin.H{
 				"response": "you are not a bcaf member",
@@ -64,7 +64,7 @@ func Auth(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 
 		// Create new account entry in database if no account exists
 
-		results, err := util.GetData("accounts", bson.D{{Key: "userId", Value: userId}}, ctx, mongoClient)
+		results, err := util.GetData[util.AccountData]("accounts", bson.D{{Key: "userId", Value: userId}}, ctx, mongoClient)
 		if err != nil {
 			return
 		}

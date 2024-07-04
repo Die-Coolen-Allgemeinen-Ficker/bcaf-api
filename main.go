@@ -5,6 +5,7 @@ import (
 	"bcaf-api/endpoints/accounts"
 	"bcaf-api/endpoints/accounts/lookup"
 	"bcaf-api/endpoints/minecraft/name"
+	"bcaf-api/endpoints/smp"
 	"context"
 	"os"
 
@@ -46,6 +47,8 @@ func main() {
 	lookup.Id("/v1/accounts/lookup/:id", rest, mongoClient)
 	endpoints.Ping("/v1/ping", rest)
 	name.Uuid("/v1/minecraft/name/:uuid", rest)
+	smp.Info("/v1/smp/info", rest, mongoClient)
+	smp.Worlds("/v1/smp/worlds", rest, mongoClient)
 
 	rest.Run()
 }

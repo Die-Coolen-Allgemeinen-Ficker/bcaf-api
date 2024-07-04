@@ -35,9 +35,9 @@ type AccountData struct {
 			MessagesLast30Days int64 `json:"messagesLast30Days"`
 		} `json:"messageStats"`
 		Achievements []struct {
-			Name string `json:"name"`
+			Name        string `json:"name"`
 			Description string `json:"description"`
-			Timestamp int64 `json:"timestamp"`
+			Timestamp   int64  `json:"timestamp"`
 		} `json:"achievements"`
 	} `json:"profile"`
 	BcafCoin                 int64 `json:"bcafCoin"`
@@ -49,34 +49,11 @@ type AccountData struct {
 	UpdatedTimestamp         int64 `json:"updatedTimestamp"`
 }
 
-func GetData(collection string, filter bson.D, ctx *gin.Context, mongoClient *mongo.Client) ([]*AccountData, error) {
-	col := mongoClient.Database("bcaf-user-data").Collection(collection)
-	cursor, err := col.Find(context.TODO(), filter)
-	if err != nil {
-		switch err {
-		default:
-			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"response": "internal server error",
-			})
-		}
-		return nil, err
-	}
-
-	var results []*AccountData
-	for cursor.Next(context.TODO()) {
-		var r bson.M
-		cursor.Decode(&r)
-		result, _ := FromJSONRaw[AccountData](r)
-		results = append(results, result)
-	}
-
-	return results, nil
-}
-
-func UpdateData(account *AccountData, ctx *gin.Context, collection *mongo.Collection) error {
+func UpdateAccount(account *AccountData, ctx *gin.Context, mongoClient *mongo.Client) error {
+	col := mongoClient.Database("bcaf-user-data").Collection("accounts")
 	account.UpdatedTimestamp = time.Now().UnixMilli()
 	jsonData, _ := ToJSON(*account)
-	_, err := collection.ReplaceOne(context.TODO(), bson.D{{Key: "userId", Value: account.UserId}}, jsonData)
+	_, err := col.ReplaceOne(context.TODO(), bson.D{{Key: "userId", Value: account.UserId}}, jsonData)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"response": "internal server error",
