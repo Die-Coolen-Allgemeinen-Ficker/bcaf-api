@@ -26,7 +26,7 @@ func GetData[T any](collection string, filter bson.D, ctx *gin.Context, mongoCli
 	for cursor.Next(context.TODO()) {
 		var r bson.M
 		cursor.Decode(&r)
-		if r["_hidden"] == false {
+		if r["_hidden"] == nil || r["_hidden"] == false {
 			result, _ := FromJSONRaw[T](r)
 			results = append(results, result)
 		}
