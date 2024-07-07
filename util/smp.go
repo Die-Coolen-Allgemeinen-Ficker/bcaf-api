@@ -14,4 +14,5 @@ type SmpWorld struct {
 	Download string  `json:"download"`
 	Version  string  `json:"version"`
 	Modpack  *string `json:"modpack"`
+	Banner   string  `json:"banner"`
 }

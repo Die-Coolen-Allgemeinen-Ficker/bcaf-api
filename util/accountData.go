@@ -33,6 +33,7 @@ type AccountData struct {
 			BReactionCount     int64 `json:"bReactionCount"`
 			MessageCount       int64 `json:"messageCount"`
 			MessagesLast30Days int64 `json:"messagesLast30Days"`
+			YapOMeter          int64 `json:"yapOMeter"`
 		} `json:"messageStats"`
 		Achievements []struct {
 			Name        string `json:"name"`
