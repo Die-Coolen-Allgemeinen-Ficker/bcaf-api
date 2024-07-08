@@ -29,11 +29,11 @@ type AccountData struct {
 			TictactoeWins  int64 `json:"tictactoeWins"`
 		} `json:"games"`
 		MessageStats struct {
-			NWordCount         int64 `json:"nWordCount"`
-			BReactionCount     int64 `json:"bReactionCount"`
-			MessageCount       int64 `json:"messageCount"`
-			MessagesLast30Days int64 `json:"messagesLast30Days"`
-			YapOMeter          int64 `json:"yapOMeter"`
+			NWordCount         int64   `json:"nWordCount"`
+			BReactionCount     int64   `json:"bReactionCount"`
+			MessageCount       int64   `json:"messageCount"`
+			MessagesLast30Days int64   `json:"messagesLast30Days"`
+			YapOMeter          float64 `json:"yapOMeter"`
 		} `json:"messageStats"`
 		Achievements []struct {
 			Name        string `json:"name"`
