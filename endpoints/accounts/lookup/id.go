@@ -168,9 +168,8 @@ func Id(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 			return
 		}
 
-		response, _ := util.ToJSON(*user)
 		ctx.JSON(http.StatusOK, gin.H{
-			"response": response,
+			"response": user,
 		})
 	})
 }

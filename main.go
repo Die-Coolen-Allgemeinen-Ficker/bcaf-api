@@ -4,7 +4,10 @@ import (
 	"bcaf-api/endpoints"
 	"bcaf-api/endpoints/accounts"
 	"bcaf-api/endpoints/accounts/lookup"
+	"bcaf-api/endpoints/channels"
+	"bcaf-api/endpoints/minecraft"
 	"bcaf-api/endpoints/minecraft/name"
+	"bcaf-api/endpoints/ngram"
 	"bcaf-api/endpoints/smp"
 	"context"
 	"os"
@@ -45,10 +48,13 @@ func main() {
 	accounts.Auth("/v1/accounts/auth", rest, mongoClient)
 	accounts.Refresh("/v1/accounts/refresh", rest)
 	lookup.Id("/v1/accounts/lookup/:id", rest, mongoClient)
+	channels.List("/v1/channels/list", rest, mongoClient)
 	endpoints.Ping("/v1/ping", rest)
 	name.Uuid("/v1/minecraft/name/:uuid", rest)
+	minecraft.Link("/v1/minecraft/link", rest, mongoClient)
 	smp.Info("/v1/smp/info", rest, mongoClient)
 	smp.Worlds("/v1/smp/worlds", rest, mongoClient)
+	ngram.Search("/v1/ngram/search", rest, mongoClient)
 
 	rest.Run()
 }
