@@ -5,16 +5,19 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"time"
 
+	cache "github.com/chenyahui/gin-cache"
+	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Search(path string, rest *gin.Engine, mongoClient *mongo.Client) {
+func Search(path string, rest *gin.Engine, mongoClient *mongo.Client, memoryStore *persist.MemoryStore) {
 	rest.OPTIONS(path, func(ctx *gin.Context) {})
 
-	rest.GET(path, func(ctx *gin.Context) {
+	rest.GET(path, cache.CacheByRequestURI(memoryStore, time.Minute), func(ctx *gin.Context) {
 		// Validate
 		accessToken := ctx.Request.Header.Get("authorization")
 		userId := util.Validate(accessToken, ctx, true)
@@ -94,11 +97,11 @@ func Search(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 		for _, message := range matchedMessages {
 			var timestamp string
 			if interval == "daily" {
-				timestamp = strconv.FormatInt(message.CreatedTimestamp - (message.CreatedTimestamp % 86400000), 10);
+				timestamp = strconv.FormatInt(message.CreatedTimestamp - (message.CreatedTimestamp % 86400000), 10)
 			} else {
-				timestamp = strconv.FormatInt(message.CreatedTimestamp - (message.CreatedTimestamp % 604800000), 10);
+				timestamp = strconv.FormatInt(message.CreatedTimestamp - (message.CreatedTimestamp % 604800000), 10)
 			}
-			matchedMessageCounts[timestamp]++;
+			matchedMessageCounts[timestamp]++
 		}
 		relative := map[string]float64{}
 		absolute := map[string]int64{}
@@ -108,13 +111,13 @@ func Search(path string, rest *gin.Engine, mongoClient *mongo.Client) {
 			for timestamp, count := range messageCount {
 				timestampNumber, _ := strconv.ParseInt(timestamp, 10, 64)
 				if afterExists && beforeExists && !(timestampNumber >= after && timestampNumber <= before) {
-					continue;
+					continue
 				}
 				if afterExists && timestampNumber < after {
-					continue;
+					continue
 				}
 				if beforeExists && timestampNumber > before {
-					continue;
+					continue
 				}
 				messageCountInterval[timestamp] = count
 			}

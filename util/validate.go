@@ -4,11 +4,22 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
+var tokenCache = map[string]struct{UserId string; Timeout int64}{}
+
 func Validate(accessToken string, ctx *gin.Context, denyIfInvalid bool) *string {
+	for token, cache := range tokenCache {
+		if time.Now().UnixMilli() >= cache.Timeout {
+			delete(tokenCache, token)
+		} else if accessToken == token {
+			return &cache.UserId
+		}
+	}
+
 	httpClient := &http.Client{}
 
 	// Check if user is BCAF member
@@ -97,5 +108,9 @@ func Validate(accessToken string, ctx *gin.Context, denyIfInvalid bool) *string 
 	}
 
 	userId := userData["id"].(string)
+	tokenCache[accessToken] = struct{UserId string; Timeout int64}{
+		UserId: userId,
+		Timeout: time.Now().UnixMilli() + time.Minute.Milliseconds(),
+	}
 	return &userId
 }

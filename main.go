@@ -11,7 +11,9 @@ import (
 	"bcaf-api/endpoints/smp"
 	"context"
 	"os"
+	"time"
 
+	"github.com/chenyahui/gin-cache/persist"
 	"github.com/gin-gonic/gin"
 	"github.com/lpernett/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -44,6 +46,8 @@ func main() {
 
 	rest.Use(corsMiddleware())
 
+	memoryStore := persist.NewMemoryStore(time.Minute)
+
 	accounts.List("/v1/accounts/list", rest, mongoClient)
 	accounts.Auth("/v1/accounts/auth", rest, mongoClient)
 	accounts.Refresh("/v1/accounts/refresh", rest)
@@ -54,7 +58,7 @@ func main() {
 	minecraft.Link("/v1/minecraft/link", rest, mongoClient)
 	smp.Info("/v1/smp/info", rest, mongoClient)
 	smp.Worlds("/v1/smp/worlds", rest, mongoClient)
-	ngram.Search("/v1/ngram/search", rest, mongoClient)
+	ngram.Search("/v1/ngram/search", rest, mongoClient, memoryStore)
 
 	rest.Run()
 }
