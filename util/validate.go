@@ -55,7 +55,7 @@ func Validate(accessToken string, ctx *gin.Context, denyIfInvalid bool) *string 
 	
 	if bodyData == nil {
 		if denyIfInvalid {
-			ctx.JSON(http.StatusBadRequest, gin.H{
+			ctx.JSON(http.StatusUnauthorized, gin.H{
 				"response": "invalid access token",
 			})
 		}
